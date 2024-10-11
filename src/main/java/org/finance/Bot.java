@@ -3,20 +3,19 @@ package org.finance;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import io.quarkiverse.langchain4j.RegisterAiService;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * This is a sample Bot, it is configured to ingest the 'easy-rag-catalog/'.
  * You can @Inject this Bot in your Rest resource
- *
+ * <p>
  * \{@code
- *     @Inject
- *     Bot bot;
  *
- *     @POST
- *     @Produces(MediaType.TEXT_PLAIN)
- *     public String chat(String q) {
- *         return bot.chat(q);
- *     }
+ * @Inject Bot bot;
+ * @POST
+ * @Produces(MediaType.TEXT_PLAIN) public String chat(String q) {
+ * return bot.chat(q);
+ * }
  * }
  */
 @RegisterAiService // no need to declare a retrieval augmentor here, it is automatically generated and discovered
