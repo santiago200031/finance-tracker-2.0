@@ -1,7 +1,6 @@
 package org.finance.controllers;
 
-import org.finance.models.Finance;
-import org.finance.models.FinanceDO;
+import org.finance.models.finance.FinanceDO;
 import org.slf4j.Logger;
 
 public abstract class PriceDifferenceController {

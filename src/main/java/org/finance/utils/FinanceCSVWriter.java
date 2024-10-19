@@ -1,7 +1,7 @@
 package org.finance.utils;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.finance.models.Finance;
+import org.finance.models.finance.Finance;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -20,7 +20,6 @@ public class FinanceCSVWriter {
 
             for (Finance data : dataList) {
                 fileWriter.write(
-                        data.getId() + "," +
                         data.getPrice() + "," +
                         data.getPriceChange() + "," +
                         data.getDisplayName() + "," +

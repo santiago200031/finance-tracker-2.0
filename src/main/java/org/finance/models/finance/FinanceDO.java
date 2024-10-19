@@ -1,4 +1,4 @@
-package org.finance.models;
+package org.finance.models.finance;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,8 +16,6 @@ import lombok.ToString;
 @ToString
 public class FinanceDO {
 
-    @JsonProperty("id")
-    private String id;
     @JsonProperty("price")
     private float price;
     @JsonProperty("priceChange")

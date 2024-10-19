@@ -5,20 +5,17 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.finance.controllers.FinanceParser;
-import org.finance.models.Finance;
-import org.finance.models.FinanceDO;
+import org.finance.models.finance.Finance;
+import org.finance.models.finance.FinanceDO;
+import org.finance.models.finance.SupportedFinances;
 import org.finance.services.FinanceService;
+import org.finance.services.FinanceServiceFactory;
 import org.finance.services.UserService;
-import org.finance.services.priceDifferences.PriceDifferenceBTCService;
-import org.finance.services.priceDifferences.PriceDifferenceDekaService;
 import org.finance.utils.FinanceCSVWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 @ApplicationScoped
 public class FinanceServicesTasks {
@@ -32,13 +29,7 @@ public class FinanceServicesTasks {
     String btcCsvFile;
 
     @Inject
-    FinanceService financeService;
-
-    @Inject
-    PriceDifferenceDekaService priceDifferenceServiceDeka;
-
-    @Inject
-    PriceDifferenceBTCService priceDifferenceServiceBTC;
+    FinanceServiceFactory financeServiceFactory;
 
     @Inject
     UserService userService;
@@ -49,47 +40,28 @@ public class FinanceServicesTasks {
     @Inject
     FinanceParser financeParser;
 
-    private boolean firstStartDeka = true, firstStartBTC = true;
+    private boolean isFirstStartDeka = true, firstStartBTC = true;
 
     @Scheduled(every = "60s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     public void saveInDekaFileIfPriceHasChanged() {
-        saveInFileIfPriceHasChanged(
-                dekaCsvFile,
-                this.firstStartDeka,
-                financeService::getDekaGlobalChampions,
-                financeService::getPreviousFinanceDeka,
-                financeService::updatePreviousFinanceDeka,
-                priceDifferenceServiceDeka::getDifferencePrice
-        );
-        this.firstStartDeka = false;
+        saveInFileIfPriceHasChanged(SupportedFinances.DEKA, dekaCsvFile, this.isFirstStartDeka);
+        this.isFirstStartDeka = false;
     }
 
     @Scheduled(every = "17s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     public void saveInBTCFileIfPriceHasChanged() {
-        saveInFileIfPriceHasChanged(
-                btcCsvFile,
-                this.firstStartBTC,
-                financeService::getBTC,
-                financeService::getPreviousFinanceBTC,
-                financeService::updatePreviousFinanceBTC,
-                priceDifferenceServiceBTC::getDifferencePrice
-        );
+        saveInFileIfPriceHasChanged(SupportedFinances.BTC, btcCsvFile, this.firstStartBTC);
         this.firstStartBTC = false;
     }
 
-    private void saveInFileIfPriceHasChanged(
-            String path,
-            boolean isFirstStart,
-            Supplier<FinanceDO> getCurrentFinance,
-            Supplier<FinanceDO> getPreviousFinance,
-            Function<Finance, Finance> updatePreviousFinance,
-            BiFunction<FinanceDO, FinanceDO, Float> getDifferencePriceFunction
-    ) {
+    private void saveInFileIfPriceHasChanged(SupportedFinances financeType, String path, boolean isFirstStart) {
         userService.getActivityId();
-        FinanceDO currentFinance = getCurrentFinance.get();
-        FinanceDO previousFinance = getPreviousFinance.get();
-
+        FinanceService financeService = financeServiceFactory.getFinanceService(financeType);
+        FinanceDO currentFinance = financeService.getCurrentFinance();
+        FinanceDO previousFinance = financeService.getPreviousFinance();
+        float differencePrice = financeService.getDifferencePrice(currentFinance, previousFinance);
         Finance currentFinanceEntity = financeParser.toFinance(currentFinance);
+
         if (isFirstStart) {
             String methodName = currentFinance.getDisplayName().trim();
             LOGGER.debug("Task save{}InFileIfPriceHasChanged() started...", methodName);
@@ -99,15 +71,12 @@ public class FinanceServicesTasks {
             return;
         }
 
-        float differencePrice = getDifferencePriceFunction.apply(currentFinance, previousFinance);
-
         if (differencePrice != 0f) {
-            updatePreviousFinance.apply(currentFinanceEntity);
+            financeService.updatePreviousFinance(currentFinanceEntity);
         }
 
         if (checkIfDiffIsToSaveToType(path, differencePrice)) {
             LOGGER.debug("Saving in {}", currentFinance.getDisplayName().trim());
-
             handleSaveInFile(currentFinanceEntity, differencePrice, path);
         }
     }
@@ -115,7 +84,6 @@ public class FinanceServicesTasks {
     private void handleSaveInFile(Finance currentFinance, float differencePrice, String path) {
         currentFinance.setDifferencePrice(differencePrice);
         LOGGER.info("Difference for {} was: {} EUR", currentFinance.getDisplayName(), differencePrice);
-
         financeCSVWriter.appendFinanceCSV(path, currentFinance);
     }
 
@@ -125,27 +93,17 @@ public class FinanceServicesTasks {
         finance.setDifferencePrice(finance.getPrice());
         finance.setLocalDateChange(String.valueOf(Instant.now().toEpochMilli()));
         financeCSVWriter.appendFinanceCSV(path, finance);
-
-        if (path.equals(dekaCsvFile)) {
-            financeService.updatePreviousFinanceDeka(finance);
-            return;
-        }
-
-        if (path.equals(btcCsvFile)) {
-            financeService.updatePreviousFinanceBTC(finance);
-            return;
-        }
+        FinanceService financeService = financeServiceFactory.getFinanceService(path.equals(dekaCsvFile) ? SupportedFinances.DEKA : SupportedFinances.BTC);
+        financeService.updatePreviousFinance(finance);
     }
 
     private boolean checkIfDiffIsToSaveToType(String path, float differencePrice) {
         if (path.equals(dekaCsvFile)) {
             return differencePrice < -0.2f || differencePrice > 0.2f;
         }
-
         if (path.equals(btcCsvFile)) {
             return differencePrice < -2f || differencePrice > 2f;
         }
-
         return false;
     }
 }

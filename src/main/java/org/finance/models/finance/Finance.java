@@ -1,18 +1,18 @@
-package org.finance.models;
+package org.finance.models.finance;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-@Builder
-@Data
 @ToString
-public class Finance {
+@Entity
+public class Finance extends PanacheEntity {
 
-    @JsonProperty("id")
-    private String id;
     @JsonProperty("price")
     private float price;
     @JsonProperty("priceChange")

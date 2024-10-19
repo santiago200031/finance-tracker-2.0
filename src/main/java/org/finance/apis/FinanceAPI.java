@@ -1,30 +1,30 @@
 package org.finance.apis;
 
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import org.finance.models.FinanceDO;
-import org.finance.models.FinanceOffline;
-import org.finance.services.FinanceService;
-
-import java.util.List;
+import org.finance.models.finance.FinanceDO;
+import org.finance.models.finance.FinanceOffline;
+import org.finance.services.BTCFinanceService;
+import org.finance.services.DekaFinanceService;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/finances")
 public class FinanceAPI {
 
     @Inject
-    FinanceService financeService;
+    DekaFinanceService dekaFinanceService;
+
+    @Inject
+    BTCFinanceService btcFinanceService;
 
     @GET
     @Path("/deka")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFinanceDekaGlobalChampions() {
-        FinanceDO finance = financeService.getDekaGlobalChampions();
+        FinanceDO finance = dekaFinanceService.getCurrentFinance();
         if (finance == null) {
             return Response.noContent().build();
         }
@@ -36,7 +36,7 @@ public class FinanceAPI {
     @Path("/btc")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFinanceBitcoin() {
-        FinanceDO finance = financeService.getBTC();
+        FinanceDO finance = btcFinanceService.getCurrentFinance();
         if (finance == null) {
             return Response.noContent().build();
         }
@@ -45,21 +45,10 @@ public class FinanceAPI {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getFinances() {
-        List<List<FinanceDO>> finances = financeService.getFinances();
-
-        if (finances == null) {
-            return Response.noContent().build();
-        }
-        return Response.ok(finances).build();
-    }
-
-    @GET
     @Path("/deka-offline")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDekaFinanceLocalData() {
-        FinanceOffline financeOffline = financeService.getDekaLocalFinanceAsJson();
+        FinanceOffline financeOffline = dekaFinanceService.getLocalFinance();
 
         if (financeOffline == null) {
             return Response.noContent().build();
