@@ -4,9 +4,13 @@ import org.finance.models.finance.Finance;
 import org.finance.models.finance.FinanceDO;
 
 public interface FinanceService {
-    FinanceDO getCurrentFinance();
+    FinanceDO getCurrentFinanceOnline();
 
-    FinanceDO getPreviousFinance();
+    FinanceDO getLastFinanceDB();
+
+    FinanceDO getPreviousFinanceCSV();
+
+    FinanceDO getPreviousFinanceDB();
 
     float getDifferencePrice(FinanceDO currentFinance, FinanceDO previousFinance);
 
