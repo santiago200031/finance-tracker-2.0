@@ -3,7 +3,7 @@ package org.finance.services;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.finance.controllers.MicrosoftChartRestClient;
+import org.finance.external.MicrosoftChartRestClient;
 import org.finance.models.ChartRequestDO;
 import org.finance.models.FinanceChartDO;
 import org.finance.utils.FinanceIds;

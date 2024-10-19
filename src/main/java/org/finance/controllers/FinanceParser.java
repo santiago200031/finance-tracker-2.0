@@ -1,15 +1,14 @@
 package org.finance.controllers;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.finance.models.Finance;
-import org.finance.models.FinanceDO;
+import org.finance.models.finance.Finance;
+import org.finance.models.finance.FinanceDO;
 
 @ApplicationScoped
 public class FinanceParser {
 
     public FinanceDO toFinanceDO(Finance finance) {
         return FinanceDO.builder()
-                .id(finance.getId())
                 .displayName(finance.getDisplayName())
                 .timeLastUpdated(finance.getTimeLastUpdated())
                 .price(finance.getPrice())
@@ -18,12 +17,12 @@ public class FinanceParser {
     }
 
     public Finance toFinance(FinanceDO financeDO) {
-        return Finance.builder()
-                .id(financeDO.getId())
-                .displayName(financeDO.getDisplayName())
-                .timeLastUpdated(financeDO.getTimeLastUpdated())
-                .price(financeDO.getPrice())
-                .priceChange(financeDO.getPriceChange())
-                .build();
+        Finance finance = new Finance();
+        finance.setDisplayName(financeDO.getDisplayName());
+        finance.setTimeLastUpdated(financeDO.getTimeLastUpdated());
+        finance.setPrice(financeDO.getPrice());
+        finance.setPriceChange(financeDO.getPriceChange());
+
+        return finance;
     }
 }

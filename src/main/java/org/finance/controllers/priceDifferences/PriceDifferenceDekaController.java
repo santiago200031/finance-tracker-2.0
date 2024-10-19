@@ -5,8 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.finance.controllers.PriceDifferenceController;
-import org.finance.models.Finance;
-import org.finance.models.FinanceDO;
+import org.finance.models.finance.FinanceDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

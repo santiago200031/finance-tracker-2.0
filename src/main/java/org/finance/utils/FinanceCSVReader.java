@@ -1,8 +1,8 @@
 package org.finance.utils;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.finance.models.Finance;
-import org.finance.models.FinanceOffline;
+import org.finance.models.finance.Finance;
+import org.finance.models.finance.FinanceOffline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class FinanceCSVReader {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public Finance readLastFinanceCSV(String fileName) {
-        Finance lastData = null;
+        Finance lastData = new Finance();
 
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileName))) {
             fileReader.readLine();
@@ -32,14 +32,13 @@ public class FinanceCSVReader {
 
                 try (Scanner rowScanner = new Scanner(line)) {
                     rowScanner.useDelimiter(CSVFileProperties.DELIMITER.getValue());
-                    lastData = Finance.builder()
-                            .price(Float.parseFloat(rowScanner.next()))
-                            .differencePrice(Float.parseFloat(rowScanner.next()))
-                            .priceChange(Float.parseFloat(rowScanner.next()))
-                            .displayName(rowScanner.next())
-                            .timeLastUpdated(rowScanner.next())
-                            .localDateChange(rowScanner.next())
-                            .build();
+
+                    lastData.setPrice(Float.parseFloat(rowScanner.next()));
+                    lastData.setDifferencePrice(Float.parseFloat(rowScanner.next()));
+                    lastData.setPriceChange(Float.parseFloat(rowScanner.next()));
+                    lastData.setDisplayName(rowScanner.next());
+                    lastData.setTimeLastUpdated(rowScanner.next());
+                    lastData.setLocalDateChange(rowScanner.next());
                 } catch (Exception e) {
                     return null;
                 }
@@ -73,8 +72,13 @@ public class FinanceCSVReader {
             List<String> timesLastUpdated = new ArrayList<>();
             List<String> localDateChanges = new ArrayList<>();
             String line;
+            // int lineNumber = 0;
             while ((line = fileReader.readLine()) != null) {
                 try (Scanner rowScanner = new Scanner(line)) {
+//                    if (skip > lineNumber) {
+//                        lineNumber++;
+//                        continue;
+//                    }
                     rowScanner.useDelimiter(CSVFileProperties.DELIMITER.getValue());
 
                     prices.add(Float.parseFloat(rowScanner.next()));
@@ -93,6 +97,7 @@ public class FinanceCSVReader {
                             .localDateChanges(localDateChanges)
                             .build();
                 }
+                lineNumber++;
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage());

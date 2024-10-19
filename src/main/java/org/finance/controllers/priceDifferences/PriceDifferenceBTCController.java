@@ -4,8 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.finance.automation.AutomationRobotBTC;
 import org.finance.controllers.PriceDifferenceController;
-import org.finance.models.Finance;
-import org.finance.models.FinanceDO;
+import org.finance.models.finance.FinanceDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class PriceDifferenceBTCController extends PriceDifferenceController {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    private AutomationRobotBTC robotBTC;
+    AutomationRobotBTC robotBTC;
 
     private float previousGauge = 0f;
 

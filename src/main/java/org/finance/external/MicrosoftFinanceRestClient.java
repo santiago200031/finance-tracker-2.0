@@ -1,10 +1,10 @@
-package org.finance.controllers;
+package org.finance.external;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.finance.models.FinanceDO;
+import org.finance.models.finance.FinanceDO;
 
 import java.util.List;
 
