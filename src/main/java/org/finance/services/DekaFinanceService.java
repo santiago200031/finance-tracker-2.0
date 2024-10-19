@@ -3,9 +3,11 @@ package org.finance.services;
 import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.finance.controllers.FinanceController;
 import org.finance.controllers.FinanceParser;
-import org.finance.models.finance.Finance;
+import org.finance.models.finance.BaseFinance;
+import org.finance.models.finance.DekaFinance;
 import org.finance.models.finance.FinanceDO;
 import org.finance.models.finance.FinanceOffline;
 import org.finance.repositories.DekaFinanceRepository;
@@ -82,7 +84,7 @@ public class DekaFinanceService implements FinanceService {
             value = {"Retrieve the last value of the finance Deka Global Champion from the Data Base"}
     )
     public FinanceDO getLastFinanceDBDeka() {
-        Optional<Finance> finance = dekaRepository.findLastValue();
+        Optional<DekaFinance> finance = dekaRepository.findLastValue();
         return finance.map(financeParser::toFinanceDO)
                 .orElse(FinanceDO.builder()
                         .price(0)
@@ -96,13 +98,19 @@ public class DekaFinanceService implements FinanceService {
     }
 
     @Override
-    public void updatePreviousFinance(Finance currentFinance) {
+    public void updatePreviousFinance(BaseFinance currentFinance) {
         this.previousFinanceCSV = financeParser.toFinanceDO(currentFinance);
         this.previousFinanceDB = financeParser.toFinanceDO(currentFinance);
     }
 
+    @Override
+    @Transactional
+    public void persist(BaseFinance currentFinanceEntity) {
+        dekaRepository.persistAndFlush((DekaFinance) currentFinanceEntity);
+    }
+
     public FinanceDO getLastDekaFinance() {
-        Finance lastDekaFinance = financeController.getLastDekaFinance();
+        DekaFinance lastDekaFinance = financeController.getLastDekaFinance();
         return financeParser.toFinanceDO(lastDekaFinance);
     }
 

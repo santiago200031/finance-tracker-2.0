@@ -1,7 +1,7 @@
 package org.finance.utils;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.finance.models.finance.Finance;
+import org.finance.models.finance.BaseFinance;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -13,12 +13,12 @@ import static org.finance.utils.CSVFileProperties.CSV_HEADER;
 @ApplicationScoped
 public class FinanceCSVWriter {
 
-    public void writeFinanceCSV(String fileName, Finance... dataList) {
+    public void writeFinanceCSV(String fileName, BaseFinance... dataList) {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileName))) {
             fileWriter.write(CSV_HEADER.getValue());
             fileWriter.newLine();
 
-            for (Finance data : dataList) {
+            for (BaseFinance data : dataList) {
                 fileWriter.write(
                         data.getPrice() + "," +
                         data.getPriceChange() + "," +
@@ -33,9 +33,9 @@ public class FinanceCSVWriter {
     }
 
 
-    public void appendFinanceCSV(String fileName, Finance... dataList) {
+    public void appendFinanceCSV(String fileName, BaseFinance... dataList) {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileName, true))) {
-            for (Finance data : dataList) {
+            for (BaseFinance data : dataList) {
                 fileWriter.write(
                         data.getPrice() + "," +
                         data.getDifferencePrice() + "," +

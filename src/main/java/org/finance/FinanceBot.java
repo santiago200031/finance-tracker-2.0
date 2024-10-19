@@ -11,7 +11,7 @@ import org.finance.services.DekaFinanceService;
 )
 public interface FinanceBot {
 
-    @SystemMessage("You are a Finance Bot that helps to check how the finances are going.")
+    @SystemMessage("You are a BaseFinance Bot that helps to check how the finances are going.")
     String sendMessage(@UserMessage String request);
 
 }

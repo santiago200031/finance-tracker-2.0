@@ -1,6 +1,6 @@
 package org.finance.services;
 
-import org.finance.models.finance.Finance;
+import org.finance.models.finance.BaseFinance;
 import org.finance.models.finance.FinanceDO;
 
 public interface FinanceService {
@@ -14,5 +14,7 @@ public interface FinanceService {
 
     float getDifferencePrice(FinanceDO currentFinance, FinanceDO previousFinance);
 
-    void updatePreviousFinance(Finance currentFinance);
+    void updatePreviousFinance(BaseFinance currentFinance);
+
+    void persist(BaseFinance currentFinanceEntity);
 }

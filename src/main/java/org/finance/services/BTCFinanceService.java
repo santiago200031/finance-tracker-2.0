@@ -3,9 +3,10 @@ package org.finance.services;
 import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.finance.controllers.FinanceController;
 import org.finance.controllers.FinanceParser;
-import org.finance.models.finance.Finance;
+import org.finance.models.finance.BaseFinance;
 import org.finance.models.finance.FinanceDO;
 import org.finance.repositories.BTCFinanceRepository;
 import org.finance.services.priceDifferences.PriceDifferenceBTCService;
@@ -77,7 +78,7 @@ public class BTCFinanceService implements FinanceService {
             value = {"Retrieve the last value of the finance Bitcoin (BTC) from the Data Base"}
     )
     public FinanceDO getLastFinanceDBBTC() {
-        Optional<Finance> finance = btcRepository.findLastValue();
+        Optional<BaseFinance> finance = btcRepository.findLastValue();
         return finance.map(financeParser::toFinanceDO)
                 .orElse(FinanceDO.builder()
                         .price(0)
@@ -91,12 +92,18 @@ public class BTCFinanceService implements FinanceService {
     }
 
     @Override
-    public void updatePreviousFinance(Finance currentFinance) {
+    public void updatePreviousFinance(BaseFinance currentFinance) {
         this.previousFinanceCSV = financeParser.toFinanceDO(currentFinance);
     }
 
+    @Override
+    @Transactional
+    public void persist(BaseFinance currentFinanceEntity) {
+        btcRepository.persistAndFlush(currentFinanceEntity);
+    }
+
     private FinanceDO getLastFinance() {
-        Finance lastBTCFinance = financeController.getLastBTCFinance();
+        BaseFinance lastBTCFinance = financeController.getLastBTCFinance();
         return financeParser.toFinanceDO(lastBTCFinance);
     }
 }

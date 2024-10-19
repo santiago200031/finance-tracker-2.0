@@ -2,7 +2,7 @@ package org.finance.models.finance;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Entity;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,8 +10,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Entity
-public class Finance extends PanacheEntity {
+@MappedSuperclass
+public class BaseFinance extends PanacheEntity {
 
     @JsonProperty("price")
     private float price;

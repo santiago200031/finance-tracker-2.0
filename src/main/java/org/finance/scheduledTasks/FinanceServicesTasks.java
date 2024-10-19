@@ -5,7 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.finance.controllers.FinanceParser;
-import org.finance.models.finance.Finance;
+import org.finance.models.finance.BaseFinance;
 import org.finance.models.finance.FinanceDO;
 import org.finance.models.finance.SupportedFinances;
 import org.finance.services.FinanceService;
@@ -58,36 +58,50 @@ public class FinanceServicesTasks {
         userService.getActivityId();
         FinanceService financeService = financeServiceFactory.getFinanceService(financeType);
         FinanceDO currentFinanceOnline = financeService.getCurrentFinanceOnline();
-        FinanceDO previousFinance = financeService.getPreviousFinanceCSV();
-        float differencePrice = financeService.getDifferencePrice(currentFinanceOnline, previousFinance);
-        Finance currentFinanceEntity = financeParser.toFinance(currentFinanceOnline);
+        FinanceDO previousFinanceCSV = financeService.getPreviousFinanceCSV();
+        FinanceDO previousFinanceDB = financeService.getPreviousFinanceDB();
+        float differencePriceCSV = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceCSV);
+        float differencePriceDB = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceDB);
+        BaseFinance currentFinanceEntity = financeParser.toFinance(currentFinanceOnline, financeType);
 
+        String displayName = currentFinanceOnline.getDisplayName();
         if (isFirstStart) {
-            String methodName = currentFinanceOnline.getDisplayName().trim();
+            String methodName = displayName.trim();
             LOGGER.debug("Task save{}InFileIfPriceHasChanged() started...", methodName);
-            if (previousFinance == null) {
+            if (previousFinanceCSV == null) {
+                handleFirstExecutionWithNoDataInDB(financeService, currentFinanceEntity);
                 handleFirstExecutionWithNoDataInFile(currentFinanceEntity, path);
             }
             return;
         }
 
-        if (differencePrice != 0f) {
+        if (differencePriceCSV != 0f) {
             financeService.updatePreviousFinance(currentFinanceEntity);
         }
 
-        if (checkIfDiffIsToSaveToType(path, differencePrice)) {
-            LOGGER.debug("Saving in {}", currentFinanceOnline.getDisplayName().trim());
-            handleSaveInFile(currentFinanceEntity, differencePrice, path);
+        if (checkIfDiffIsToSaveToType(path, differencePriceCSV)) {
+            LOGGER.debug("Saving in {}", displayName.trim());
+            LOGGER.info("Difference for {} was: {} EUR", displayName, differencePriceCSV);
+            handleSaveInFile(currentFinanceEntity, differencePriceCSV, path);
+            handleSaveInDB(currentFinanceEntity, differencePriceCSV, financeService);
         }
     }
 
-    private void handleSaveInFile(Finance currentFinance, float differencePrice, String path) {
+    private void handleSaveInDB(BaseFinance currentFinanceEntity, float differencePrice, FinanceService financeService) {
+        currentFinanceEntity.setDifferencePrice(differencePrice);
+        financeService.persist(currentFinanceEntity);
+    }
+
+    private void handleFirstExecutionWithNoDataInDB(FinanceService financeService, BaseFinance currentFinanceEntity) {
+        financeService.persist(currentFinanceEntity);
+    }
+
+    private void handleSaveInFile(BaseFinance currentFinance, float differencePrice, String path) {
         currentFinance.setDifferencePrice(differencePrice);
-        LOGGER.info("Difference for {} was: {} EUR", currentFinance.getDisplayName(), differencePrice);
         financeCSVWriter.appendFinanceCSV(path, currentFinance);
     }
 
-    private void handleFirstExecutionWithNoDataInFile(Finance finance, String path) {
+    private void handleFirstExecutionWithNoDataInFile(BaseFinance finance, String path) {
         LOGGER.info("Inserting first data of {}...", finance.getDisplayName());
         finance.setPriceChange(finance.getPrice());
         finance.setDifferencePrice(finance.getPrice());

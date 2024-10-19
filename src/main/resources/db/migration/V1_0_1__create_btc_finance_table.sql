@@ -1,6 +1,6 @@
 CREATE TABLE finance.btc_finance
 (
-    id              VARCHAR(255),
+    id              BIGINT,
     price           DECIMAL(10, 2),
     priceChange     DECIMAL(10, 2),
     displayName     VARCHAR(255),
