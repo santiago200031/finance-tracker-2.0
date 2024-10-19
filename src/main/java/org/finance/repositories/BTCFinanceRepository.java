@@ -9,8 +9,8 @@ import org.finance.models.finance.Finance;
 import java.util.Optional;
 
 @ApplicationScoped
-@Table(name = "deka_finance")
-public class DekaFinanceRepository implements PanacheRepository<Finance> {
+@Table(name = "btc_finance")
+public class BTCFinanceRepository implements PanacheRepository<Finance> {
 
     @Transactional
     public Optional<Finance> findLastValue() {

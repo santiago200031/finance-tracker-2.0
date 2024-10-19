@@ -11,6 +11,7 @@ import org.finance.models.finance.FinanceOffline;
 import org.finance.repositories.DekaFinanceRepository;
 import org.finance.services.priceDifferences.PriceDifferenceDekaService;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -31,29 +32,62 @@ public class DekaFinanceService implements FinanceService {
     @Inject
     PriceDifferenceDekaService priceDifferenceServiceDeka;
 
-    private FinanceDO previousFinance;
+    private FinanceDO previousFinanceCSV;
+
+    private FinanceDO previousFinanceDB;
 
     @Override
     //fixme(when the name of the tool is really set, it should work
     // @Tool(name = "deka_get_current_finance", value = {"Get the current data value for Deka Global Champions"})
-    public FinanceDO getCurrentFinance() {
-        return getCurrentFinanceDeka();
+    public FinanceDO getCurrentFinanceOnline() {
+        return getCurrentFinanceDekaOnline();
     }
 
-    @Tool(name = "get_current_finance_deka", value = {"Get the current data value for Deka Global Champions"})
-    private FinanceDO getCurrentFinanceDeka() {
+    @Tool(
+            name = "get_current_finance_online_deka",
+            value = {"Get the current data value for Deka Global Champions online"}
+    )
+    private FinanceDO getCurrentFinanceDekaOnline() {
         UUID activityId = userService.getActivityId();
         return financeController.getDekaGlobalChampions(activityId);
     }
 
     @Override
-    public FinanceDO getPreviousFinance() {
-        if (this.previousFinance == null) {
+    public FinanceDO getPreviousFinanceCSV() {
+        if (this.previousFinanceCSV == null) {
             FinanceDO lastDekaFinance = this.getLastDekaFinance();
-            this.previousFinance = lastDekaFinance;
+            this.previousFinanceCSV = lastDekaFinance;
             return lastDekaFinance;
         }
-        return this.previousFinance;
+        return this.previousFinanceCSV;
+    }
+
+    @Override
+    public FinanceDO getPreviousFinanceDB() {
+        if (this.previousFinanceDB == null) {
+            FinanceDO lastFinance = this.getLastFinanceDB();
+            this.previousFinanceDB = lastFinance;
+            return lastFinance;
+        }
+        return this.previousFinanceDB;
+    }
+
+    @Override
+    public FinanceDO getLastFinanceDB() {
+        return getLastFinanceDBDeka();
+    }
+
+    @Tool(
+            name = "get_last_finance_db_deka",
+            value = {"Retrieve the last value of the finance Deka Global Champion from the Data Base"}
+    )
+    public FinanceDO getLastFinanceDBDeka() {
+        Optional<Finance> finance = dekaRepository.findLastValue();
+        return finance.map(financeParser::toFinanceDO)
+                .orElse(FinanceDO.builder()
+                        .price(0)
+                        .priceChange(0)
+                        .build());
     }
 
     @Override
@@ -63,7 +97,8 @@ public class DekaFinanceService implements FinanceService {
 
     @Override
     public void updatePreviousFinance(Finance currentFinance) {
-        this.previousFinance = financeParser.toFinanceDO(currentFinance);
+        this.previousFinanceCSV = financeParser.toFinanceDO(currentFinance);
+        this.previousFinanceDB = financeParser.toFinanceDO(currentFinance);
     }
 
     public FinanceDO getLastDekaFinance() {

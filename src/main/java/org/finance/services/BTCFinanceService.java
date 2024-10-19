@@ -7,16 +7,17 @@ import org.finance.controllers.FinanceController;
 import org.finance.controllers.FinanceParser;
 import org.finance.models.finance.Finance;
 import org.finance.models.finance.FinanceDO;
-import org.finance.repositories.BtcFinanceRepository;
+import org.finance.repositories.BTCFinanceRepository;
 import org.finance.services.priceDifferences.PriceDifferenceBTCService;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
 public class BTCFinanceService implements FinanceService {
 
     @Inject
-    BtcFinanceRepository btcRepository;
+    BTCFinanceRepository btcRepository;
 
     @Inject
     FinanceParser financeParser;
@@ -30,28 +31,58 @@ public class BTCFinanceService implements FinanceService {
     @Inject
     UserService userService;
 
-    private FinanceDO previousFinance;
+    private FinanceDO previousFinanceCSV;
+
+    private FinanceDO previousFinanceDB;
 
     @Override
     //fixme: @Tool(name = "get_current_finance_btc", value = {"Get the current data value for Bitcoin (BTC)"})
-    public FinanceDO getCurrentFinance() {
+    public FinanceDO getCurrentFinanceOnline() {
         return getCurrentFinanceBTC();
     }
 
-    @Tool(name = "get_current_finance_btc", value = {"Get the current data value for Bitcoin (BTC)"})
+    @Tool(name = "get_current_finance_online_btc", value = {"Get the current data value for Bitcoin (BTC)"})
     private FinanceDO getCurrentFinanceBTC() {
         UUID activityId = userService.getActivityId();
         return financeController.getBTC(activityId);
     }
 
     @Override
-    public FinanceDO getPreviousFinance() {
-        if (this.previousFinance == null) {
+    public FinanceDO getPreviousFinanceCSV() {
+        if (this.previousFinanceCSV == null) {
             FinanceDO lastBTCFinance = this.getLastFinance();
-            this.previousFinance = lastBTCFinance;
+            this.previousFinanceCSV = lastBTCFinance;
             return lastBTCFinance;
         }
-        return this.previousFinance;
+        return this.previousFinanceCSV;
+    }
+
+    @Override
+    public FinanceDO getPreviousFinanceDB() {
+        if (this.previousFinanceDB == null) {
+            FinanceDO lastFinance = this.getLastFinanceDB();
+            this.previousFinanceDB = lastFinance;
+            return lastFinance;
+        }
+        return this.previousFinanceDB;
+    }
+
+    @Override
+    public FinanceDO getLastFinanceDB() {
+        return getLastFinanceDBBTC();
+    }
+
+    @Tool(
+            name = "get_last_finance_db_btc",
+            value = {"Retrieve the last value of the finance Bitcoin (BTC) from the Data Base"}
+    )
+    public FinanceDO getLastFinanceDBBTC() {
+        Optional<Finance> finance = btcRepository.findLastValue();
+        return finance.map(financeParser::toFinanceDO)
+                .orElse(FinanceDO.builder()
+                        .price(0)
+                        .priceChange(0)
+                        .build());
     }
 
     @Override
@@ -61,7 +92,7 @@ public class BTCFinanceService implements FinanceService {
 
     @Override
     public void updatePreviousFinance(Finance currentFinance) {
-        this.previousFinance = financeParser.toFinanceDO(currentFinance);
+        this.previousFinanceCSV = financeParser.toFinanceDO(currentFinance);
     }
 
     private FinanceDO getLastFinance() {
