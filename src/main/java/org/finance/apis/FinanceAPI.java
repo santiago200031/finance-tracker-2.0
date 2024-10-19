@@ -24,7 +24,7 @@ public class FinanceAPI {
     @Path("/deka")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFinanceDekaGlobalChampions() {
-        FinanceDO finance = dekaFinanceService.getCurrentFinance();
+        FinanceDO finance = dekaFinanceService.getCurrentFinanceOnline();
         if (finance == null) {
             return Response.noContent().build();
         }
@@ -36,7 +36,7 @@ public class FinanceAPI {
     @Path("/btc")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFinanceBitcoin() {
-        FinanceDO finance = btcFinanceService.getCurrentFinance();
+        FinanceDO finance = btcFinanceService.getCurrentFinanceOnline();
         if (finance == null) {
             return Response.noContent().build();
         }

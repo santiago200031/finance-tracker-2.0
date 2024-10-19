@@ -57,13 +57,13 @@ public class FinanceServicesTasks {
     private void saveInFileIfPriceHasChanged(SupportedFinances financeType, String path, boolean isFirstStart) {
         userService.getActivityId();
         FinanceService financeService = financeServiceFactory.getFinanceService(financeType);
-        FinanceDO currentFinance = financeService.getCurrentFinance();
-        FinanceDO previousFinance = financeService.getPreviousFinance();
-        float differencePrice = financeService.getDifferencePrice(currentFinance, previousFinance);
-        Finance currentFinanceEntity = financeParser.toFinance(currentFinance);
+        FinanceDO currentFinanceOnline = financeService.getCurrentFinanceOnline();
+        FinanceDO previousFinance = financeService.getPreviousFinanceCSV();
+        float differencePrice = financeService.getDifferencePrice(currentFinanceOnline, previousFinance);
+        Finance currentFinanceEntity = financeParser.toFinance(currentFinanceOnline);
 
         if (isFirstStart) {
-            String methodName = currentFinance.getDisplayName().trim();
+            String methodName = currentFinanceOnline.getDisplayName().trim();
             LOGGER.debug("Task save{}InFileIfPriceHasChanged() started...", methodName);
             if (previousFinance == null) {
                 handleFirstExecutionWithNoDataInFile(currentFinanceEntity, path);
@@ -76,7 +76,7 @@ public class FinanceServicesTasks {
         }
 
         if (checkIfDiffIsToSaveToType(path, differencePrice)) {
-            LOGGER.debug("Saving in {}", currentFinance.getDisplayName().trim());
+            LOGGER.debug("Saving in {}", currentFinanceOnline.getDisplayName().trim());
             handleSaveInFile(currentFinanceEntity, differencePrice, path);
         }
     }
