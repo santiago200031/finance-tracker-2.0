@@ -6,11 +6,13 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.finance.controllers.FinanceController;
 import org.finance.controllers.FinanceParser;
+import org.finance.models.finance.BTCFinance;
 import org.finance.models.finance.BaseFinance;
 import org.finance.models.finance.FinanceDO;
 import org.finance.repositories.BTCFinanceRepository;
 import org.finance.services.priceDifferences.PriceDifferenceBTCService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,10 +44,27 @@ public class BTCFinanceService implements FinanceService {
         return getCurrentFinanceBTC();
     }
 
+
     @Tool(name = "get_current_finance_online_btc", value = {"Get the current data value for Bitcoin (BTC)"})
-    private FinanceDO getCurrentFinanceBTC() {
+    public FinanceDO getCurrentFinanceBTC() {
         UUID activityId = userService.getActivityId();
         return financeController.getBTC(activityId);
+    }
+
+    @Override
+    public List<FinanceDO> getAllFinanceDB() {
+        return getAllFinanceBTCDB();
+    }
+
+    @Tool(
+            name = "get_all_finance_db_btc",
+            value = {"Get all the data from Bitcoin (BTC) from the Data Base"}
+    )
+    public List<FinanceDO> getAllFinanceBTCDB() {
+        return btcRepository.listAll()
+                .stream()
+                .map(financeParser::toFinanceDO)
+                .toList();
     }
 
     @Override
@@ -78,7 +97,7 @@ public class BTCFinanceService implements FinanceService {
             value = {"Retrieve the last value of the finance Bitcoin (BTC) from the Data Base"}
     )
     public FinanceDO getLastFinanceDBBTC() {
-        Optional<BaseFinance> finance = btcRepository.findLastValue();
+        Optional<BTCFinance> finance = btcRepository.findLastValue();
         return finance.map(financeParser::toFinanceDO)
                 .orElse(FinanceDO.builder()
                         .price(0)
@@ -92,14 +111,19 @@ public class BTCFinanceService implements FinanceService {
     }
 
     @Override
-    public void updatePreviousFinance(BaseFinance currentFinance) {
+    public void updatePreviousFinanceCSV(BaseFinance currentFinance) {
         this.previousFinanceCSV = financeParser.toFinanceDO(currentFinance);
     }
 
     @Override
+    public void updatePreviousFinanceDB(BaseFinance currentFinance) {
+        this.previousFinanceDB = financeParser.toFinanceDO(currentFinance);
+    }
+
     @Transactional
     public void persist(BaseFinance currentFinanceEntity) {
-        btcRepository.persistAndFlush(currentFinanceEntity);
+        BTCFinance btcFinance = (BTCFinance) currentFinanceEntity;
+        btcRepository.persistAndFlush(btcFinance);
     }
 
     private FinanceDO getLastFinance() {

@@ -60,8 +60,6 @@ public class FinanceServicesTasks {
         FinanceDO currentFinanceOnline = financeService.getCurrentFinanceOnline();
         FinanceDO previousFinanceCSV = financeService.getPreviousFinanceCSV();
         FinanceDO previousFinanceDB = financeService.getPreviousFinanceDB();
-        float differencePriceCSV = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceCSV);
-        float differencePriceDB = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceDB);
         BaseFinance currentFinanceEntity = financeParser.toFinance(currentFinanceOnline, financeType);
 
         String displayName = currentFinanceOnline.getDisplayName();
@@ -75,14 +73,24 @@ public class FinanceServicesTasks {
             return;
         }
 
+        float differencePriceCSV = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceCSV);
         if (differencePriceCSV != 0f) {
-            financeService.updatePreviousFinance(currentFinanceEntity);
+            financeService.updatePreviousFinanceCSV(currentFinanceEntity);
         }
 
-        if (checkIfDiffIsToSaveToType(path, differencePriceCSV)) {
-            LOGGER.debug("Saving in {}", displayName.trim());
+        float differencePriceDB = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceDB);
+        if (differencePriceDB != 0f) {
+            financeService.updatePreviousFinanceDB(currentFinanceEntity);
+        }
+
+        if (checkIfDiffIsToSaveToType(financeType, differencePriceCSV)) {
+            LOGGER.debug("Saving in CSV file for {}", displayName.trim());
             LOGGER.info("Difference for {} was: {} EUR", displayName, differencePriceCSV);
             handleSaveInFile(currentFinanceEntity, differencePriceCSV, path);
+        }
+        if (checkIfDiffIsToSaveToType(financeType, differencePriceCSV)) {
+            LOGGER.debug("Saving in DB for {}", displayName.trim());
+            LOGGER.info("Difference for {} was: {} EUR", displayName, differencePriceCSV);
             handleSaveInDB(currentFinanceEntity, differencePriceCSV, financeService);
         }
     }
@@ -108,14 +116,14 @@ public class FinanceServicesTasks {
         finance.setLocalDateChange(String.valueOf(Instant.now().toEpochMilli()));
         financeCSVWriter.appendFinanceCSV(path, finance);
         FinanceService financeService = financeServiceFactory.getFinanceService(path.equals(dekaCsvFile) ? SupportedFinances.DEKA : SupportedFinances.BTC);
-        financeService.updatePreviousFinance(finance);
+        financeService.updatePreviousFinanceCSV(finance);
     }
 
-    private boolean checkIfDiffIsToSaveToType(String path, float differencePrice) {
-        if (path.equals(dekaCsvFile)) {
+    private boolean checkIfDiffIsToSaveToType(SupportedFinances financeType, float differencePrice) {
+        if (financeType.equals(SupportedFinances.DEKA)) {
             return differencePrice < -0.2f || differencePrice > 0.2f;
         }
-        if (path.equals(btcCsvFile)) {
+        if (financeType.equals(SupportedFinances.BTC)) {
             return differencePrice < -2f || differencePrice > 2f;
         }
         return false;

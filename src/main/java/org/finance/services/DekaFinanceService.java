@@ -13,6 +13,7 @@ import org.finance.models.finance.FinanceOffline;
 import org.finance.repositories.DekaFinanceRepository;
 import org.finance.services.priceDifferences.PriceDifferenceDekaService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,6 +54,23 @@ public class DekaFinanceService implements FinanceService {
         UUID activityId = userService.getActivityId();
         return financeController.getDekaGlobalChampions(activityId);
     }
+
+    @Override
+    public List<FinanceDO> getAllFinanceDB() {
+        return getAllFinanceDekaDB();
+    }
+
+    @Tool(
+            name = "get_all_finance_db_deka",
+            value = {"Get all the data from Deka Global Champion from the Data Base"}
+    )
+    public List<FinanceDO> getAllFinanceDekaDB() {
+        return dekaRepository.listAll()
+                .stream()
+                .map(financeParser::toFinanceDO)
+                .toList();
+    }
+
 
     @Override
     public FinanceDO getPreviousFinanceCSV() {
@@ -98,15 +116,20 @@ public class DekaFinanceService implements FinanceService {
     }
 
     @Override
-    public void updatePreviousFinance(BaseFinance currentFinance) {
+    public void updatePreviousFinanceCSV(BaseFinance currentFinance) {
         this.previousFinanceCSV = financeParser.toFinanceDO(currentFinance);
+    }
+
+    @Override
+    public void updatePreviousFinanceDB(BaseFinance currentFinance) {
         this.previousFinanceDB = financeParser.toFinanceDO(currentFinance);
     }
 
     @Override
     @Transactional
     public void persist(BaseFinance currentFinanceEntity) {
-        dekaRepository.persistAndFlush((DekaFinance) currentFinanceEntity);
+        DekaFinance dekaFinance = (DekaFinance) currentFinanceEntity;
+        dekaRepository.persistAndFlush(dekaFinance);
     }
 
     public FinanceDO getLastDekaFinance() {

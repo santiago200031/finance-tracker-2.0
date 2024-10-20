@@ -3,8 +3,12 @@ package org.finance.services;
 import org.finance.models.finance.BaseFinance;
 import org.finance.models.finance.FinanceDO;
 
+import java.util.List;
+
 public interface FinanceService {
     FinanceDO getCurrentFinanceOnline();
+
+    List<FinanceDO> getAllFinanceDB();
 
     FinanceDO getLastFinanceDB();
 
@@ -14,7 +18,10 @@ public interface FinanceService {
 
     float getDifferencePrice(FinanceDO currentFinance, FinanceDO previousFinance);
 
-    void updatePreviousFinance(BaseFinance currentFinance);
+    void updatePreviousFinanceCSV(BaseFinance currentFinance);
+
+    void updatePreviousFinanceDB(BaseFinance currentFinance);
 
     void persist(BaseFinance currentFinanceEntity);
+
 }
