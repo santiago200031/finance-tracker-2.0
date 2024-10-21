@@ -5,7 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.finance.controllers.FinanceParser;
-import org.finance.models.finance.Finance;
+import org.finance.models.finance.BaseFinance;
 import org.finance.models.finance.FinanceDO;
 import org.finance.models.finance.SupportedFinances;
 import org.finance.services.FinanceService;
@@ -57,51 +57,73 @@ public class FinanceServicesTasks {
     private void saveInFileIfPriceHasChanged(SupportedFinances financeType, String path, boolean isFirstStart) {
         userService.getActivityId();
         FinanceService financeService = financeServiceFactory.getFinanceService(financeType);
-        FinanceDO currentFinance = financeService.getCurrentFinance();
-        FinanceDO previousFinance = financeService.getPreviousFinance();
-        float differencePrice = financeService.getDifferencePrice(currentFinance, previousFinance);
-        Finance currentFinanceEntity = financeParser.toFinance(currentFinance);
+        FinanceDO currentFinanceOnline = financeService.getCurrentFinanceOnline();
+        FinanceDO previousFinanceCSV = financeService.getPreviousFinanceCSV();
+        FinanceDO previousFinanceDB = financeService.getPreviousFinanceDB();
+        BaseFinance currentFinanceEntity = financeParser.toFinance(currentFinanceOnline, financeType);
 
+        String displayName = currentFinanceOnline.getDisplayName();
         if (isFirstStart) {
-            String methodName = currentFinance.getDisplayName().trim();
+            String methodName = displayName.trim();
             LOGGER.debug("Task save{}InFileIfPriceHasChanged() started...", methodName);
-            if (previousFinance == null) {
+            if (previousFinanceCSV == null) {
+                handleFirstExecutionWithNoDataInDB(financeService, currentFinanceEntity);
                 handleFirstExecutionWithNoDataInFile(currentFinanceEntity, path);
             }
             return;
         }
 
-        if (differencePrice != 0f) {
-            financeService.updatePreviousFinance(currentFinanceEntity);
+        float differencePriceCSV = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceCSV);
+        if (differencePriceCSV != 0f) {
+            financeService.updatePreviousFinanceCSV(currentFinanceEntity);
         }
 
-        if (checkIfDiffIsToSaveToType(path, differencePrice)) {
-            LOGGER.debug("Saving in {}", currentFinance.getDisplayName().trim());
-            handleSaveInFile(currentFinanceEntity, differencePrice, path);
+        float differencePriceDB = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceDB);
+        if (differencePriceDB != 0f) {
+            financeService.updatePreviousFinanceDB(currentFinanceEntity);
+        }
+
+        if (checkIfDiffIsToSaveToType(financeType, differencePriceCSV)) {
+            LOGGER.debug("Saving in CSV file for {}", displayName.trim());
+            LOGGER.info("Difference for {} was: {} EUR", displayName, differencePriceCSV);
+            handleSaveInFile(currentFinanceEntity, differencePriceCSV, path);
+        }
+        if (checkIfDiffIsToSaveToType(financeType, differencePriceCSV)) {
+            LOGGER.debug("Saving in DB for {}", displayName.trim());
+            LOGGER.info("Difference for {} was: {} EUR", displayName, differencePriceCSV);
+            handleSaveInDB(currentFinanceEntity, differencePriceCSV, financeService);
         }
     }
 
-    private void handleSaveInFile(Finance currentFinance, float differencePrice, String path) {
+    private void handleSaveInDB(BaseFinance currentFinanceEntity, float differencePrice, FinanceService financeService) {
+        currentFinanceEntity.setDifferencePrice(differencePrice);
+        financeService.persist(currentFinanceEntity);
+    }
+
+    private void handleFirstExecutionWithNoDataInDB(FinanceService financeService, BaseFinance currentFinanceEntity) {
+        financeService.persist(currentFinanceEntity);
+    }
+
+    private void handleSaveInFile(BaseFinance currentFinance, float differencePrice, String path) {
         currentFinance.setDifferencePrice(differencePrice);
-        LOGGER.info("Difference for {} was: {} EUR", currentFinance.getDisplayName(), differencePrice);
         financeCSVWriter.appendFinanceCSV(path, currentFinance);
     }
 
-    private void handleFirstExecutionWithNoDataInFile(Finance finance, String path) {
+    private void handleFirstExecutionWithNoDataInFile(BaseFinance finance, String path) {
         LOGGER.info("Inserting first data of {}...", finance.getDisplayName());
         finance.setPriceChange(finance.getPrice());
         finance.setDifferencePrice(finance.getPrice());
         finance.setLocalDateChange(String.valueOf(Instant.now().toEpochMilli()));
         financeCSVWriter.appendFinanceCSV(path, finance);
         FinanceService financeService = financeServiceFactory.getFinanceService(path.equals(dekaCsvFile) ? SupportedFinances.DEKA : SupportedFinances.BTC);
-        financeService.updatePreviousFinance(finance);
+        financeService.updatePreviousFinanceCSV(finance);
     }
 
-    private boolean checkIfDiffIsToSaveToType(String path, float differencePrice) {
-        if (path.equals(dekaCsvFile)) {
+    private boolean checkIfDiffIsToSaveToType(SupportedFinances financeType, float differencePrice) {
+        if (financeType.equals(SupportedFinances.DEKA)) {
             return differencePrice < -0.2f || differencePrice > 0.2f;
         }
-        if (path.equals(btcCsvFile)) {
+        if (financeType.equals(SupportedFinances.BTC)) {
             return differencePrice < -2f || differencePrice > 2f;
         }
         return false;

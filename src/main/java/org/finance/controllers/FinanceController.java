@@ -5,7 +5,8 @@ import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.finance.external.MicrosoftFinanceRestClient;
-import org.finance.models.finance.Finance;
+import org.finance.models.finance.BaseFinance;
+import org.finance.models.finance.DekaFinance;
 import org.finance.models.finance.FinanceDO;
 import org.finance.models.finance.FinanceOffline;
 import org.finance.models.FinanceRequestDO;
@@ -68,12 +69,12 @@ public class FinanceController {
         return finance.getFirst();
     }
 
-    public Finance getLastDekaFinance() {
+    public DekaFinance getLastDekaFinance() {
         return financeCSVReader
                 .readLastFinanceCSV(dekaCsvFile);
     }
 
-    public Finance getLastBTCFinance() {
+    public BaseFinance getLastBTCFinance() {
         return financeCSVReader
                 .readLastFinanceCSV(btcCsvFile);
     }

@@ -1,7 +1,7 @@
 package org.finance.utils;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.finance.models.finance.Finance;
+import org.finance.models.finance.DekaFinance;
 import org.finance.models.finance.FinanceOffline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +21,8 @@ public class FinanceCSVReader {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    public Finance readLastFinanceCSV(String fileName) {
-        Finance lastData = new Finance();
+    public DekaFinance readLastFinanceCSV(String fileName) {
+        DekaFinance lastData = new DekaFinance();
 
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileName))) {
             fileReader.readLine();

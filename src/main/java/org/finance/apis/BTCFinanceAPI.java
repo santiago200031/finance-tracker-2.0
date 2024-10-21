@@ -1,42 +1,26 @@
 package org.finance.apis;
 
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import org.finance.models.finance.FinanceDO;
-import org.finance.models.finance.FinanceOffline;
 import org.finance.services.BTCFinanceService;
-import org.finance.services.DekaFinanceService;
 
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/finances")
-public class FinanceAPI {
-
-    @Inject
-    DekaFinanceService dekaFinanceService;
+@Path("/finances/btc")
+public class BTCFinanceAPI {
 
     @Inject
     BTCFinanceService btcFinanceService;
 
     @GET
-    @Path("/deka")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getFinanceDekaGlobalChampions() {
-        FinanceDO finance = dekaFinanceService.getCurrentFinance();
-        if (finance == null) {
-            return Response.noContent().build();
-        }
-
-        return Response.ok(finance).build();
-    }
-
-    @GET
     @Path("/btc")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFinanceBitcoin() {
-        FinanceDO finance = btcFinanceService.getCurrentFinance();
+        FinanceDO finance = btcFinanceService.getCurrentFinanceOnline();
         if (finance == null) {
             return Response.noContent().build();
         }
@@ -45,10 +29,10 @@ public class FinanceAPI {
     }
 
     @GET
-    @Path("/deka-offline")
+    @Path("/data-base")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDekaFinanceLocalData() {
-        FinanceOffline financeOffline = dekaFinanceService.getLocalFinance();
+    public Response getDekaFinanceDataBase() {
+        FinanceDO financeOffline = btcFinanceService.getLastFinanceDB();
 
         if (financeOffline == null) {
             return Response.noContent().build();
@@ -56,4 +40,5 @@ public class FinanceAPI {
 
         return Response.ok(financeOffline).build();
     }
+
 }
