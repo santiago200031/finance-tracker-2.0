@@ -1,0 +1,1 @@
+1. Open CMD and run the windows-setup.bat script.
