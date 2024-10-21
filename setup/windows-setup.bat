@@ -19,6 +19,9 @@ echo Setting MAVEN_HOME environment variable...
 setx MAVEN_HOME "C:\Program Files\Apache\maven" /M
 set "PATH=%PATH%;%MAVEN_HOME%\bin"
 
+echo Installing IntelliJ IDEA Ultimate...
+winget install JetBrains.IntelliJIDEA.Ultimate --silent || echo Failed to install IntelliJ IDEA Ultimate
+
 echo Installing Battle.net...
 winget install Blizzard.BattleNet --silent || echo Failed to install Battle.net
 
