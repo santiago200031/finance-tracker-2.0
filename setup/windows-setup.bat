@@ -33,6 +33,9 @@ winget install Blizzard.BattleNet --silent || echo Failed to install Battle.net
 echo Installing Epic Games Launcher...
 winget install EpicGames.EpicGamesLauncher --silent || echo Failed to install Epic Games Launcher
 
+echo Installing Windows Subsystem for Linux...
+winget install Microsoft.WSL --silent || echo Failed to install Windows Subsystem for Linux
+
 echo Installing Docker Desktop...
 winget install Docker.DockerDesktop --silent || echo Failed to install Docker Desktop
 
