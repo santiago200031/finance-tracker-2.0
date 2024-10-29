@@ -10,12 +10,11 @@ import org.finance.models.finance.FinanceDO;
 import org.finance.models.finance.SupportedFinances;
 import org.finance.services.FinanceService;
 import org.finance.services.FinanceServiceFactory;
-import org.finance.services.UserService;
 import org.finance.utils.FinanceCSVWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 @ApplicationScoped
 public class FinanceServicesTasks {
@@ -30,9 +29,6 @@ public class FinanceServicesTasks {
 
     @Inject
     FinanceServiceFactory financeServiceFactory;
-
-    @Inject
-    UserService userService;
 
     @Inject
     FinanceCSVWriter financeCSVWriter;
@@ -55,43 +51,46 @@ public class FinanceServicesTasks {
     }
 
     private void saveInFileIfPriceHasChanged(SupportedFinances financeType, String path, boolean isFirstStart) {
-        userService.getActivityId();
         FinanceService financeService = financeServiceFactory.getFinanceService(financeType);
         FinanceDO currentFinanceOnline = financeService.getCurrentFinanceOnline();
-        FinanceDO previousFinanceCSV = financeService.getPreviousFinanceCSV();
+        //FinanceDO previousFinanceCSV = financeService.getPreviousFinanceCSV();
         FinanceDO previousFinanceDB = financeService.getPreviousFinanceDB();
         BaseFinance currentFinanceEntity = financeParser.toFinance(currentFinanceOnline, financeType);
 
         String displayName = currentFinanceOnline.getDisplayName();
         if (isFirstStart) {
             String methodName = displayName.trim();
-            LOGGER.debug("Task save{}InFileIfPriceHasChanged() started...", methodName);
-            if (previousFinanceCSV == null) {
+            LOGGER.info("Task save{}InFileIfPriceHasChanged() started...", methodName);
+            if (previousFinanceDB == null) {
                 handleFirstExecutionWithNoDataInDB(financeService, currentFinanceEntity);
-                handleFirstExecutionWithNoDataInFile(currentFinanceEntity, path);
+                //handleFirstExecutionWithNoDataInFile(currentFinanceEntity, path);
             }
             return;
         }
 
+        /*
         float differencePriceCSV = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceCSV);
         if (differencePriceCSV != 0f) {
             financeService.updatePreviousFinanceCSV(currentFinanceEntity);
         }
+         */
 
         float differencePriceDB = financeService.getDifferencePrice(currentFinanceOnline, previousFinanceDB);
         if (differencePriceDB != 0f) {
             financeService.updatePreviousFinanceDB(currentFinanceEntity);
         }
 
+        /*
         if (checkIfDiffIsToSaveToType(financeType, differencePriceCSV)) {
             LOGGER.debug("Saving in CSV file for {}", displayName.trim());
             LOGGER.info("Difference for {} was: {} EUR", displayName, differencePriceCSV);
             handleSaveInFile(currentFinanceEntity, differencePriceCSV, path);
         }
-        if (checkIfDiffIsToSaveToType(financeType, differencePriceCSV)) {
+         */
+        if (checkIfDiffIsToSaveToType(financeType, differencePriceDB)) {
             LOGGER.debug("Saving in DB for {}", displayName.trim());
-            LOGGER.info("Difference for {} was: {} EUR", displayName, differencePriceCSV);
-            handleSaveInDB(currentFinanceEntity, differencePriceCSV, financeService);
+            LOGGER.info("Difference for {} was: {} EUR", displayName, differencePriceDB);
+            handleSaveInDB(currentFinanceEntity, differencePriceDB, financeService);
         }
     }
 
@@ -113,7 +112,7 @@ public class FinanceServicesTasks {
         LOGGER.info("Inserting first data of {}...", finance.getDisplayName());
         finance.setPriceChange(finance.getPrice());
         finance.setDifferencePrice(finance.getPrice());
-        finance.setLocalDateChange(String.valueOf(Instant.now().toEpochMilli()));
+        finance.setLocalDateChange(LocalDate.now());
         financeCSVWriter.appendFinanceCSV(path, finance);
         FinanceService financeService = financeServiceFactory.getFinanceService(path.equals(dekaCsvFile) ? SupportedFinances.DEKA : SupportedFinances.BTC);
         financeService.updatePreviousFinanceCSV(finance);
