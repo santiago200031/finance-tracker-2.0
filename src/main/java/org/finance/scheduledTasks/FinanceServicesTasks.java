@@ -40,17 +40,17 @@ public class FinanceServicesTasks {
 
     @Scheduled(every = "60s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     public void saveInDekaFileIfPriceHasChanged() {
-        saveInFileIfPriceHasChanged(SupportedFinances.DEKA, dekaCsvFile, this.isFirstStartDeka);
+        saveInDBIfPriceHasChanged(SupportedFinances.DEKA, this.isFirstStartDeka);
         this.isFirstStartDeka = false;
     }
 
     @Scheduled(every = "17s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     public void saveInBTCFileIfPriceHasChanged() {
-        saveInFileIfPriceHasChanged(SupportedFinances.BTC, btcCsvFile, this.firstStartBTC);
+        saveInDBIfPriceHasChanged(SupportedFinances.BTC, this.firstStartBTC);
         this.firstStartBTC = false;
     }
 
-    private void saveInFileIfPriceHasChanged(SupportedFinances financeType, String path, boolean isFirstStart) {
+    private void saveInDBIfPriceHasChanged(SupportedFinances financeType, boolean isFirstStart) {
         FinanceService financeService = financeServiceFactory.getFinanceService(financeType);
         FinanceDO currentFinanceOnline = financeService.getCurrentFinanceOnline();
         //FinanceDO previousFinanceCSV = financeService.getPreviousFinanceCSV();
