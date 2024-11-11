@@ -97,14 +97,15 @@ public class BTCFinanceService implements FinanceService {
     )
     public FinanceDO getLastFinanceDBBTC() {
         Optional<BTCFinance> finance = btcRepository.findLastValue();
-        if (finance.isPresent()) {
-            BTCFinance presentFinance = finance.get();
-            return financeParser.toFinanceDO(presentFinance);
+        if (finance.isEmpty()) {
+            return FinanceDO.builder()
+                    .price(0)
+                    .priceChange(0)
+                    .build();
         }
-        return FinanceDO.builder()
-                .price(0)
-                .priceChange(0)
-                .build();
+
+        BTCFinance presentFinance = finance.get();
+        return financeParser.toFinanceDO(presentFinance);
     }
 
     @Override
