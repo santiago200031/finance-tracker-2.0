@@ -103,11 +103,14 @@ public class DekaFinanceService implements FinanceService {
     )
     public FinanceDO getLastFinanceDBDeka() {
         Optional<DekaFinance> finance = dekaRepository.findLastValue();
-        return finance.map(financeParser::toFinanceDO)
-                .orElse(FinanceDO.builder()
-                        .price(0)
-                        .priceChange(0)
-                        .build());
+        if (finance.isPresent()) {
+            DekaFinance presentFinance = finance.get();
+            return financeParser.toFinanceDO(presentFinance);
+        }
+        return FinanceDO.builder()
+                .price(0)
+                .priceChange(0)
+                .build();
     }
 
     @Override
@@ -134,6 +137,10 @@ public class DekaFinanceService implements FinanceService {
 
     public FinanceDO getLastDekaFinance() {
         DekaFinance lastDekaFinance = financeController.getLastDekaFinance();
+        if(lastDekaFinance == null){
+            return FinanceDO.builder().build();
+        }
+
         return financeParser.toFinanceDO(lastDekaFinance);
     }
 

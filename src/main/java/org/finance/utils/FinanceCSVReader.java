@@ -1,7 +1,7 @@
 package org.finance.utils;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.finance.models.finance.DekaFinance;
+import org.finance.models.finance.BaseFinance;
 import org.finance.models.finance.FinanceOffline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -21,8 +23,8 @@ public class FinanceCSVReader {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    public DekaFinance readLastFinanceCSV(String fileName) {
-        DekaFinance lastData = new DekaFinance();
+    public BaseFinance readLastFinanceCSV(String fileName) {
+        BaseFinance lastData = new BaseFinance();
 
         try (BufferedReader fileReader = new BufferedReader(new FileReader(fileName))) {
             fileReader.readLine();
@@ -38,7 +40,10 @@ public class FinanceCSVReader {
                     lastData.setPriceChange(Float.parseFloat(rowScanner.next()));
                     lastData.setDisplayName(rowScanner.next());
                     lastData.setTimeLastUpdated(rowScanner.next());
-                    lastData.setLocalDateChange(rowScanner.next());
+
+                    String localDateChangeString = rowScanner.next();
+                    LocalDate localDateChange = LocalDate.parse(localDateChangeString, DateTimeFormatter.ISO_DATE);
+                    lastData.setLocalDateChange(localDateChange);
                 } catch (Exception e) {
                     return null;
                 }

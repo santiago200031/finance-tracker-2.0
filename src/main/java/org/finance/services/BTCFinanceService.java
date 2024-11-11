@@ -44,7 +44,6 @@ public class BTCFinanceService implements FinanceService {
         return getCurrentFinanceBTC();
     }
 
-
     @Tool(name = "get_current_finance_online_btc", value = {"Get the current data value for Bitcoin (BTC)"})
     public FinanceDO getCurrentFinanceBTC() {
         UUID activityId = userService.getActivityId();
@@ -98,11 +97,14 @@ public class BTCFinanceService implements FinanceService {
     )
     public FinanceDO getLastFinanceDBBTC() {
         Optional<BTCFinance> finance = btcRepository.findLastValue();
-        return finance.map(financeParser::toFinanceDO)
-                .orElse(FinanceDO.builder()
-                        .price(0)
-                        .priceChange(0)
-                        .build());
+        if (finance.isPresent()) {
+            BTCFinance presentFinance = finance.get();
+            return financeParser.toFinanceDO(presentFinance);
+        }
+        return FinanceDO.builder()
+                .price(0)
+                .priceChange(0)
+                .build();
     }
 
     @Override
@@ -128,6 +130,9 @@ public class BTCFinanceService implements FinanceService {
 
     private FinanceDO getLastFinance() {
         BaseFinance lastBTCFinance = financeController.getLastBTCFinance();
+        if(lastBTCFinance == null) {
+            return FinanceDO.builder().build();
+        }
         return financeParser.toFinanceDO(lastBTCFinance);
     }
 }
