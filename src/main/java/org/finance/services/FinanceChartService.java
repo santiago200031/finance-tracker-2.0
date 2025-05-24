@@ -19,11 +19,8 @@ public class FinanceChartService {
     @RestClient
     MicrosoftChartRestClient microsoftChartRestClient;
 
-    @Inject
-    UserService userService;
-
     public FinanceChartDO getDekaGlobalChampions() {
-        UUID activityId = userService.getActivityId();
+        UUID activityId = UUID.randomUUID();
         String activityName = activityId.toString();
 
         ChartRequestDO chartRequestDO = new ChartRequestDO();
@@ -43,7 +40,7 @@ public class FinanceChartService {
 
 
     public List<FinanceChartDO> getFinanceCharts() {
-        UUID activityId = userService.getActivityId();
+        UUID activityId = UUID.randomUUID();
         String activityName = activityId.toString();
 
         ChartRequestDO chartRequestDO = new ChartRequestDO();

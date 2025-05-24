@@ -24,9 +24,6 @@ public class DekaFinanceService implements FinanceService {
     FinanceController financeController;
 
     @Inject
-    UserService userService;
-
-    @Inject
     FinanceParser financeParser;
 
     @Inject
@@ -50,8 +47,8 @@ public class DekaFinanceService implements FinanceService {
             name = "get_current_finance_online_deka",
             value = {"Get the current data value for Deka Global Champions online"}
     )
-    private FinanceDO getCurrentFinanceDekaOnline() {
-        UUID activityId = userService.getActivityId();
+    public FinanceDO getCurrentFinanceDekaOnline() {
+        UUID activityId = UUID.randomUUID();
         return financeController.getDekaGlobalChampions(activityId);
     }
 

@@ -31,9 +31,6 @@ public class BTCFinanceService implements FinanceService {
     @Inject
     FinanceController financeController;
 
-    @Inject
-    UserService userService;
-
     private FinanceDO previousFinanceCSV;
 
     private FinanceDO previousFinanceDB;
@@ -46,7 +43,7 @@ public class BTCFinanceService implements FinanceService {
 
     @Tool(name = "get_current_finance_online_btc", value = {"Get the current data value for Bitcoin (BTC)"})
     public FinanceDO getCurrentFinanceBTC() {
-        UUID activityId = userService.getActivityId();
+        UUID activityId = UUID.randomUUID();
         return financeController.getBTC(activityId);
     }
 

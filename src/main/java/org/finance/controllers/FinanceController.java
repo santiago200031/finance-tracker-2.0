@@ -44,62 +44,54 @@ public class FinanceController {
     @Inject
     FinanceParser financeParser;
 
-    public FinanceDO getDekaGlobalChampions(UUID activityId) {
+    public FinanceDO getFinance(UUID activityId, String financeId) {
         FinanceRequestDO financeRequestDO = new FinanceRequestDO();
         financeRequestDO.activityId = activityId.toString();
 
         Map<String, Object> queryParams = financeRequestDO.toQueryParams();
-        List<FinanceDO> finance = List.of();
+        List<FinanceDO> finance;
         try {
             finance = microsoftFinanceRestClient.getFinance(
                     (String) queryParams.get("apikey"),
                     (String) queryParams.get("activityId"),
                     (String) queryParams.get("ocid"),
                     (String) queryParams.get("cm"),
-                    FinanceIds.DEKA,
+                    financeId,
                     (Boolean) queryParams.get("wrapodata")
             );
-            return finance.getFirst();
-
-        } catch (ProcessingException ignored) {
-            Optional<DekaFinance> lastValue = dekaFinanceRepository.findLastValue();
+            if (!finance.isEmpty()) {
+                return finance.getFirst();
+            }
+        } catch (ProcessingException e) {
+            LOGGER.error("Error fetching finance data", e);
+            Optional<? extends BaseFinance> lastValue = getLastValue(financeId);
             if (lastValue.isPresent()) {
-                DekaFinance lastDBFinance = lastValue.get();
+                BaseFinance lastDBFinance = lastValue.get();
                 LOGGER.info("No internet connection for {}, returning last value of the DB",
                         lastDBFinance.getDisplayName());
                 return financeParser.toFinanceDO(lastDBFinance);
             }
         }
-        return finance.getFirst();
+        return null;
+    }
+
+    private Optional<? extends BaseFinance> getLastValue(String financeId) {
+        switch (financeId) {
+            case FinanceIds.DEKA:
+                return dekaFinanceRepository.findLastValue();
+            case FinanceIds.BTC:
+                return btcFinanceRepository.findLastValue();
+            default:
+                return Optional.empty();
+        }
+    }
+
+    public FinanceDO getDekaGlobalChampions(UUID activityId) {
+        return getFinance(activityId, FinanceIds.DEKA);
     }
 
     public FinanceDO getBTC(UUID activityId) {
-        FinanceRequestDO financeRequestDO = new FinanceRequestDO();
-        financeRequestDO.activityId = activityId.toString();
-
-        Map<String, Object> queryParams = financeRequestDO.toQueryParams();
-        List<FinanceDO> finance = List.of();
-        try {
-            finance = microsoftFinanceRestClient.getFinance(
-                    (String) queryParams.get("apikey"),
-                    (String) queryParams.get("activityId"),
-                    (String) queryParams.get("ocid"),
-                    (String) queryParams.get("cm"),
-                    FinanceIds.BTC,
-                    (Boolean) queryParams.get("wrapodata")
-            );
-            return finance.getFirst();
-
-        } catch (ProcessingException ignored) {
-            Optional<BTCFinance> lastValue = btcFinanceRepository.findLastValue();
-            if (lastValue.isPresent()) {
-                BTCFinance lastDBFinance = lastValue.get();
-                LOGGER.info("No internet connection for {}, returning last value of the DB",
-                        lastDBFinance.getDisplayName());
-                return financeParser.toFinanceDO(lastValue.get());
-            }
-        }
-        return finance.getFirst();
+        return getFinance(activityId, FinanceIds.BTC);
     }
 
     public DekaFinance getLastDekaFinance() {
