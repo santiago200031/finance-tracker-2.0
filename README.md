@@ -73,6 +73,7 @@ The application features an AI-powered chatbot for financial queries, automated 
 
 The application follows a **layered architecture** with clear separation of concerns:
 
+```md
 │  Presentation Layer (REST API)
 │  -- /finance-chatbot/*- AI-powered chat endpoints
 │  -- /finance/* - Finance data endpoints
@@ -82,23 +83,24 @@ The application follows a **layered architecture** with clear separation of conc
 │  -- FinanceController - Orchestrates finance operations
 │  -- PriceDifferenceController - Price analysis
 │  -- FinanceBot - LangChain4j AI Service interface
-├─────────────────────────────────────────────────────────
+
 │  Service Layer
 │  -- DekaFinanceService - Deka Global Champions ops
 │  -- BTCFinanceService - Bitcoin operations
 │  -- FinanceChartService - Chart generation
 │  -- PriceDifferenceService - Historical analysis
-├─────────────────────────────────────────────────────────
+
 │  Data Access Layer
 │  -- DekaFinanceRepository (JPA/Hibernate Panache)
 │  -- BTCFinanceRepository
 │  -- MicrosoftFinanceRestClient - External market data  
 │  -- CustomLLMModelRestClient - LLM integration
-├─────────────────────────────────────────────────────────
+
 │  Data Storage
 │  -- PostgreSQL (primary database)
 │  -- CSV (!disabled, since migration to PostgreSQL)
 │  -- RAG documents (easy-rag-catalog/)
+```
 
 ## Key Features
 
