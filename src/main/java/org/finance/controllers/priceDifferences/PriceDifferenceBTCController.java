@@ -2,7 +2,6 @@ package org.finance.controllers.priceDifferences;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.finance.automation.AutomationRobotBTC;
 import org.finance.controllers.PriceDifferenceController;
 import org.finance.models.finance.FinanceDO;
 import org.slf4j.Logger;
@@ -13,12 +12,8 @@ public class PriceDifferenceBTCController extends PriceDifferenceController {
 
     //TODO Move this to application.yaml and get with @ConfigProperty
     private static final boolean HANDLE_BUY_SELL_ACTION = false;
-    private static final int DIFFERENCE_TO_PREPARE_HANDLE_ACTION = 30;
     private static final int DIFFERENCE_TO_HANDLE_ACTION = 40;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-
-    @Inject
-    AutomationRobotBTC robotBTC;
 
     private float previousGauge = 0f;
 
@@ -44,25 +39,14 @@ public class PriceDifferenceBTCController extends PriceDifferenceController {
             return super.getDifferencePrice(currentFinance, previousFinance);
         }
 
-        if (shouldPrepareHandleAction()) {
-            robotBTC.doPreparationHandleAction();
-        }
-
         if (this.gauge > this.previousGauge + DIFFERENCE_TO_HANDLE_ACTION) {
             this.previousGauge = this.gauge;
             LOGGER.info("Buying bitcoin...");
-            robotBTC.doBuy();
 
         } else if (this.gauge < this.previousGauge - DIFFERENCE_TO_HANDLE_ACTION) {
             this.previousGauge = this.gauge;
             LOGGER.info("Selling bitcoin...");
-            robotBTC.doSell();
         }
         return super.getDifferencePrice(currentFinance, previousFinance);
-    }
-
-    private boolean shouldPrepareHandleAction() {
-        return this.gauge > this.previousGauge + DIFFERENCE_TO_PREPARE_HANDLE_ACTION ||
-               this.gauge < this.previousGauge - DIFFERENCE_TO_PREPARE_HANDLE_ACTION;
     }
 }

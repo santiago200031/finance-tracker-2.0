@@ -60,7 +60,7 @@ public class FinanceController {
                     (Boolean) queryParams.get("wrapodata")
             );
             if (!finance.isEmpty()) {
-                return finance.getFirst();
+                return finance.get(0);
             }
         } catch (ProcessingException e) {
             LOGGER.error("Error fetching finance data", e);

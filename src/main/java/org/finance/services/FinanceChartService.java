@@ -35,7 +35,7 @@ public class FinanceChartService {
                 FinanceIds.DEKA,
                 (Boolean) queryParams.get("wrapodata")
         );
-        return financeChart.getFirst();
+        return financeChart.get(0);
     }
 
 
@@ -55,6 +55,6 @@ public class FinanceChartService {
                 FinanceIds.ALL_FINANCES,
                 (Boolean) queryParams.get("wrapodata")
         );
-        return financeCharts.getFirst();
+        return financeCharts.get(0);
     }
 }
