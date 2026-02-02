@@ -1,0 +1,254 @@
+# Deka Global Champions Fund - Detailed Holdings Analysis
+
+## Fund Structure Overview
+
+**Fund Type**: Equity Fund (Aktienfonds)
+**Investment Focus**: Global Champions Strategy
+**Benchmark**: MSCI World Index
+**Currency**: Euro (EUR)
+**Inception**: Multi-decade track record
+
+## Investment Philosophy
+
+The Deka Global Champions fund follows a quality-growth investment approach that seeks companies with:
+
+1. **Market Leadership**: Dominant positions in their industries
+2. **Competitive Moats**: Sustainable competitive advantages
+3. **Strong Financials**: Consistent profitability and cash flow generation
+4. **Growth Potential**: Ability to grow revenues and earnings over time
+5. **ESG Considerations**: Environmental, Social, and Governance factors
+
+## Detailed Sector Analysis
+
+### Technology Sector (30.88%)
+
+The fund's largest allocation is to technology companies, reflecting the digital transformation of the global economy.
+
+**Key Holdings**:
+- NVIDIA (6.55%): AI and graphics processing leader
+- Microsoft (6.33%): Cloud computing and enterprise software
+- Alphabet/Google (6.23%): Search, advertising, and cloud services
+- Broadcom (3.57%): Semiconductors and infrastructure software
+- Taiwan Semiconductor (1.96%): World's largest chip manufacturer
+
+**Why This Matters**:
+Technology companies offer high growth potential but also carry concentration risk. The fund is overweight technology compared to category average (30.88% vs 27.04%).
+
+### Communication Services (14.12%)
+
+Significantly overweight compared to category average (8.51%).
+
+**Key Component**:
+- Meta Platforms (4.35%): Social media and metaverse investments
+
+**Rationale**: Digital communication and social media platforms have become essential infrastructure for modern society.
+
+### Consumer Cyclical (12.94%)
+
+Above category average (9.21%).
+
+**Key Holdings**:
+- Amazon (5.37%): E-commerce and cloud computing
+
+**Characteristics**: These companies benefit from consumer spending and economic growth but may underperform during recessions.
+
+### Financial Services (11.98%)
+
+Underweight compared to category average (15.93%).
+
+**Key Holdings**:
+- JPMorgan Chase (2.15%): Largest US bank by assets
+- Mastercard (2.19%): Payment processing network
+
+**Strategy**: Selective exposure to high-quality financial institutions with strong competitive positions.
+
+### Healthcare (9.86%)
+
+In line with category average (10.29%).
+
+**Characteristics**: Defensive sector providing stability and dividend income.
+
+### Energy (5.00%)
+
+Significantly overweight category average (1.92%).
+
+**Rationale**: Recent addition likely reflects energy sector recovery and dividend opportunities.
+
+## Geographic Distribution Analysis
+
+### Heavy US Focus (62.37%)
+
+**Advantages**:
+- Exposure to world's largest economy
+- Access to leading global companies
+- USD currency diversification for Euro-based investors
+
+**Risks**:
+- Currency fluctuation (EUR/USD)
+- US market concentration risk
+- Regulatory exposure to US policies
+
+### European Exposure (12.23%)
+
+Provides regional diversification and access to:
+- European industrial leaders
+- Eurozone stability
+- Different economic cycles than US
+
+### Asian Allocation (3.25%)
+
+Limited but strategic exposure to:
+- Japanese technology and manufacturing
+- Asian growth markets
+- Geographic diversification
+
+## Risk Metrics
+
+### Concentration Risk
+
+**Top 10 Holdings**: 42.86% of portfolio
+- High conviction approach
+- Benefits when picks perform well
+- Drawbacks if selections underperform
+
+**Individual Stock Limits**:
+- Largest position (NVIDIA): 6.55%
+- Top 3 positions: ~19% combined
+- Indicates active management with high conviction
+
+### Sector Risk
+
+**Technology Concentration**:
+- 30.88% in technology
+- Includes semiconductor, software, and internet companies
+- Vulnerable to tech sector downturns
+
+### Currency Risk
+
+**USD Exposure**:
+- Most holdings are US-based companies
+- EUR/USD exchange rate impacts returns
+- Currency hedging not typically employed
+
+## Performance Drivers
+
+### Growth Factors
+
+1. **AI Revolution**: NVIDIA and other tech holdings benefit from artificial intelligence boom
+2. **Cloud Computing**: Microsoft and Amazon leadership positions
+3. **Digital Advertising**: Google and Meta dominance
+4. **Semiconductor Demand**: Broadcom and TSMC in critical supply chain
+
+### Dividend Income
+
+While primarily a growth fund, many holdings provide dividend income:
+- JPMorgan Chase: Banking dividends
+- Apple: Consistent dividend grower
+- Microsoft: Reliable tech dividend
+
+### Quality Factors
+
+All top holdings share characteristics:
+- Strong balance sheets
+- Consistent profitability
+- Market leadership positions
+- High barriers to entry
+
+## Comparison to Market Benchmark
+
+### MSCI World Index
+
+The fund likely benchmarks against MSCI World but shows deviations:
+
+**Overweights**:
+- Technology (+3.84% vs benchmark)
+- Communication Services (+5.61% vs benchmark)
+- Energy (+3.08% vs benchmark)
+
+**Underweights**:
+- Financials (-3.95% vs category average)
+- Industrials (-6.16% vs category average)
+
+## Tax Considerations for Investors
+
+### German Tax Context
+
+- **Kapitalertragssteuer**: 26.375% (including solidarity surcharge)
+- **Freistellungsauftrag**: €1,000 annual tax-free allowance
+- **Vorabpauschale**: Not applicable to this fund type
+- **Quellensteuer**: Potential US withholding tax on dividends
+
+### Foreign Investors
+
+Tax treatment varies by jurisdiction. Consult local tax advisor for:
+- Dividend withholding taxes
+- Capital gains tax implications
+- Estate tax considerations
+
+## When to Consider This Fund
+
+### Suitable For
+
+✓ Long-term investors (5+ years)
+✓ Growth-oriented investment strategy
+✓ Belief in technology sector leadership
+✓ Comfort with equity volatility
+✓ Euro-based investors seeking USD exposure
+
+### Not Suitable For
+
+✗ Short-term investors (< 3 years)
+✗ Income-focused investors
+✗ Risk-averse investors
+✗ Those seeking balanced sector exposure
+✗ Investors uncomfortable with US concentration
+
+## Historical Performance Context
+
+### Recent Performance (2025-2026)
+
+- **1 Year Return**: +6.88%
+- **Recent Price**: €420.15
+- **Volatility**: Higher than diversified index due to concentration
+
+### Market Environment Impact
+
+**Positive Factors**:
+- Technology sector strength
+- AI investment boom
+- US market outperformance
+- Strong USD vs EUR
+
+**Challenges**:
+- Interest rate environment
+- Geopolitical tensions
+- Regulatory scrutiny of big tech
+- Concentration risk realization
+
+## Monitoring the Fund
+
+### Key Metrics to Watch
+
+1. **Top Holdings Performance**: Individual stock impact on fund
+2. **Sector Rotation**: Changes in sector allocations
+3. **Currency Impact**: EUR/USD exchange rate effects
+4. **Benchmark Deviation**: Tracking error vs MSCI World
+5. **Turnover Ratio**: Trading activity and costs
+
+### Red Flags
+
+- Significant underperformance vs benchmark
+- Excessive turnover increasing costs
+- Major shifts away from quality focus
+- Concentration increasing beyond current levels
+
+## Conclusion
+
+The Deka Global Champions fund offers concentrated exposure to high-quality global companies with a strong tilt toward US technology leaders. The "champion" strategy focuses on market leaders with sustainable competitive advantages, making it suitable for growth-oriented, long-term investors comfortable with sector concentration and equity volatility.
+
+The fund's heavy technology weighting and US focus have been beneficial in recent years but create specific risks that investors should understand before investing.
+
+---
+*Data Source: Financial Times Markets, Morningstar Inc.*
+*Report Date: February 2026*
+*Disclaimer: Past performance is not indicative of future results.*

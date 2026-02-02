@@ -1,0 +1,100 @@
+# Deka Global Champions Fund Overview
+
+## Fund Information
+
+**Fund Name**: Deka-GlobalChampions CF
+**ISIN**: DE000DK0ECU8
+**Currency**: EUR (Euro)
+**Manager**: Deka Investment GmbH
+**Fund Type**: Open-ended equity fund
+
+## Current Performance (as of February 2026)
+
+- **Current Price**: €420.15
+- **Today's Change**: +€0.27 (+0.06%)
+- **1 Year Performance**: +6.88%
+
+## Investment Strategy
+
+The Deka Global Champions fund is an open-ended equity fund that primarily invests in a globally diversified portfolio of stocks. The fund follows a "Champion Strategy" focusing on companies with:
+
+- Leading market positions within their respective industries
+- Significant growth potential
+- Strong competitive advantages
+- Sustainable business models
+
+The fund aims to provide investors with long-term capital appreciation through investments in high-quality global companies.
+
+## Asset Allocation (as of May 31, 2025)
+
+### By Asset Type
+- Non-UK Stock: 93.68% (Long: 94.31%, Short: 0.63%)
+- Cash: 3.61%
+- UK Stock: 2.71%
+- Bonds: 0%
+
+### By Sector
+- **Technology**: 30.88% (vs. category average: 27.04%)
+- **Communication Services**: 14.12% (vs. category average: 8.51%)
+- **Consumer Cyclical**: 12.94% (vs. category average: 9.21%)
+- **Financial Services**: 11.98% (vs. category average: 15.93%)
+- **Healthcare**: 9.86% (vs. category average: 10.29%)
+- **Energy**: 5.00% (vs. category average: 1.92%)
+- **Consumer Defensive**: 4.46% (vs. category average: 4.59%)
+- **Industrials**: 3.91% (vs. category average: 10.07%)
+- **Basic Materials**: 3.76% (vs. category average: 2.79%)
+
+### By Region
+- **Americas**: 64.68%
+  - United States: 62.37%
+  - Latin America: 2.31%
+- **Greater Europe**: 12.23%
+  - Eurozone: 5.27%
+  - Europe ex-Euro: 4.25%
+  - United Kingdom: 2.71%
+- **Greater Asia**: 3.25%
+  - Japan: 3.25%
+
+## Top 10 Holdings (42.86% of portfolio)
+
+1. **NVIDIA Corp (NVDA)** - 6.55% - 1 year: +57.16%
+2. **Microsoft Corp (MSFT)** - 6.33% - 1 year: +3.46%
+3. **Alphabet Inc (GOOGL)** - 6.23% - 1 year: +68.25%
+4. **Amazon.com Inc (AMZN)** - 5.37% - 1 year: +3.28%
+5. **Meta Platforms Inc (META)** - 4.35% - 1 year: +2.86%
+6. **Apple Inc (AAPL)** - 4.16% - 1 year: +12.14%
+7. **Broadcom Inc (AVGO)** - 3.57% - 1 year: +50.58%
+8. **Mastercard Inc (MA)** - 2.19% - 1 year: -0.93%
+9. **JPMorgan Chase & Co (JPM)** - 2.15% - 1 year: +14.49%
+10. **Taiwan Semiconductor Manufacturing Co Ltd (2330)** - 1.96%
+
+## Key Characteristics
+
+- **Technology-Heavy**: Over 30% allocation to technology sector, reflecting focus on innovative, high-growth companies
+- **US-Centric**: Nearly 62% allocation to US markets
+- **Concentrated Top Holdings**: Top 10 positions represent nearly 43% of the portfolio
+- **Growth-Oriented**: Heavy weighting in communication services and consumer cyclical sectors
+- **Low Bond Exposure**: Pure equity fund with minimal fixed income allocation
+
+## Risk Considerations
+
+- High concentration in technology stocks increases sector-specific risk
+- Significant US market exposure creates currency and geographic concentration
+- Top 10 holdings concentration increases single-stock risk
+- Growth-oriented approach may underperform in value-driven market cycles
+
+## Suitability
+
+This fund is suitable for investors seeking:
+- Long-term capital growth
+- Exposure to global quality companies
+- Technology and growth sector allocation
+- Willingness to accept equity market volatility
+
+## Historical Context
+
+The fund has demonstrated resilience with a 6.88% gain over the past year, despite market volatility. The champion strategy focuses on identifying companies with durable competitive advantages, strong market positions, and sustainable growth trajectories.
+
+---
+*Data Source: Financial Times Markets, Morningstar*
+*Last Updated: February 2026*
